@@ -9,8 +9,8 @@ from time import sleep
 #
 
 ### 0 thread: 2016
-### 1 thread: 63
-### 2 thread: 2016
+### 1 thread: 63     // fix by early exit after phase 1
+### 2 thread: 2016   // fix by indexing by chunk_n_vals in each thread
 ### 3 thread: 6048
 ### 4 thread: 12096
 ### 5 thread: 24192
@@ -18,8 +18,9 @@ from time import sleep
 ### 7 thread: 96768
 ### 8 thread: 193536
 
-THREADS = [1]
-LOOPS = [1, 10]
+THREADS = [4]
+# LOOPS = [1, 10]
+LOOPS = [1]
 INPUTS = ["seq_64_test.txt"]
 
 csvs = []
