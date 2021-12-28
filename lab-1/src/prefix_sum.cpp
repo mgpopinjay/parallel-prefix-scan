@@ -106,6 +106,9 @@ void* compute_prefix_sum(void *a)
 
     // PHASE 2
     // Using just thread worker 0, compute pre-fix sum with partial sum from each chunk
+    // 4 threads partial sums:  120, 376, 632, 888
+    // piror max: 496, 1128...
+
     printf("\n\n\nPhase 2 .....................");
 
     if (t_id == 0) {
@@ -119,11 +122,14 @@ void* compute_prefix_sum(void *a)
         for (int i = 1; i < n_threads-1; i++) {
             chunk_tail_ele = ( (i + 1) * std_chunk_size) - 1;
             prior_chunk_tail_ele = (i * std_chunk_size) - 1;
-            output_vals[chunk_tail_ele] = output_vals[prior_chunk_tail_ele] + output_vals[chunk_tail_ele];
 
             printf("\n");
-            printf("\nprior_chunk_tail_ele: %d", prior_chunk_tail_ele);
-            printf("\nPhase 2: chunk_tail %d = %d", chunk_tail_ele, output_vals[chunk_tail_ele]);
+            printf("\nThread %d:", i);
+            printf("\nprior[%d] %d + current[%d] %d", prior_chunk_tail_ele, output_vals[prior_chunk_tail_ele], chunk_tail_ele, output_vals[chunk_tail_ele]);
+
+            output_vals[chunk_tail_ele] = output_vals[prior_chunk_tail_ele] + output_vals[chunk_tail_ele];
+
+            printf("\n = %d", output_vals[chunk_tail_ele]);
 
         }
 
@@ -132,10 +138,15 @@ void* compute_prefix_sum(void *a)
         chunk_tail_ele = final_tail_ele;
 
         prior_chunk_tail_ele = (n_threads - 1) * std_chunk_size - 1;
+
+        printf("\n\nFinal element: %d + %d", output_vals[prior_chunk_tail_ele], output_vals[chunk_tail_ele]);
+
         output_vals[final_tail_ele] = output_vals[prior_chunk_tail_ele] + output_vals[chunk_tail_ele];
 
-        printf("\n");
-        printf("\nPhase 2: output_vals %d = %d", final_tail_ele, output_vals[final_tail_ele]);
+        printf("\n = %d", output_vals[final_tail_ele]);
+
+//        printf("\n");
+//        printf("\nPhase 2: output_vals %d = %d", final_tail_ele, output_vals[final_tail_ele]);
 
     }
     printf("\nEnd of Phase 2 BEFORE joining threads ");
