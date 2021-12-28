@@ -57,11 +57,9 @@ void* compute_prefix_sum(void *a)
     // For worker packet, use prefix_sum_args_t struct declared in helpers.h
     prefix_sum_args_t *args = (prefix_sum_args_t *) a;
 
-//    input_vals = args->*input_vals;
-//    output_vals = args->*output_vals;
     input_vals = args->input_vals;
     output_vals = args->output_vals;
-    spin = args->spin;
+//    spin = args->spin;
     n_vals = args->n_vals;
     n_threads = args->n_threads;
     t_id = args->t_id;
