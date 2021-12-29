@@ -14,13 +14,10 @@ def _parse_args():
     parser = argparse.ArgumentParser(description='run_tests.py')
 
     # General system running and configuration options
-
     parser.add_argument('--threads', type=int, default=0, help='specify number of thread workers')
     parser.add_argument('--loops', type=int, default=10, help='specify number of loops')
     parser.add_argument('--test', type=str, default='seq_64_test.txt', help='path to test data')
     parser.add_argument('--verbose', type=bool, default=False, help="turn on to print in-process log")
-
-
     args = parser.parse_args()
     return args
 

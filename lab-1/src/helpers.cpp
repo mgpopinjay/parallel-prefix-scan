@@ -26,14 +26,7 @@ void fill_args(prefix_sum_args_t *args,
                int chunk_n_vals
                ) {
 
-//    int leftovers = n_vals - (n_threads * std_chunk_size);
     int leftovers = n_vals % ( (n_threads - 1) * std_chunk_size);
-//    int final_chunk_size = std_chunk_size + leftovers;
-
-    // Fill args for sequential case
-    //            args[i] = {inputs, outputs, spin, n_vals,
-//                       n_threads, i, op, n_loops};
-
 
     for (int i = 0; i < n_threads; ++i) {
         printf("\n");
@@ -53,7 +46,6 @@ void fill_args(prefix_sum_args_t *args,
         // Case 1: All except last chunk
         if(i < n_threads-1) {
             args[i].chunk_n_vals = std_chunk_size;
-//            args[i].n_vals = n_vals/n_threads;
             printf("\nFilled std thread %d chunk n_vals: %d", i, n_vals/n_threads);
 
             args[i+1].prev_max = &outputs[(i+1)*std_chunk_size-1];
@@ -63,15 +55,12 @@ void fill_args(prefix_sum_args_t *args,
         }
         // Case 2: last chunk that might have more num of vals
         else {
-//            args[i].chunk_n_vals = final_chunk_size;
             if (leftovers) {
-//                args[i].n_vals = leftovers;
                 args[i].chunk_n_vals = leftovers;
                 printf("\n");
                 printf("\nFilled last thread %d chunk n_vals: %d", i, leftovers);
             }
             else {
-//                args[i].n_vals = n_vals/n_threads;
                 args[i].chunk_n_vals = std_chunk_size;
                 printf("\n");
                 printf("\nFilled last thread %d chunk n_vals: %d", i, n_vals/n_threads);

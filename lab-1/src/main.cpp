@@ -36,20 +36,19 @@ int main(int argc, char **argv)
     int n_vals;
     int *input_vals, *output_vals;
 
-
     read_file(&opts, &n_vals, &input_vals, &output_vals);
     printf("Read n_vals: %d \n", n_vals);
 
     // Initialize chunk size as total number of values for sequential case
-    if (opt.n_threads == 0 || opts.n_threads = 1) {
-        int std_chunk_size = n_vals;
-        int chunk_n_vals = n_vals;
-    }
-    else {
-        int std_chunk_size = n_vals/opts.n_threads;
-        int chunk_n_vals = n_vals/opts.n_threads;
-    }
+
+    int std_chunk_size = n_vals;
+    int chunk_n_vals = n_vals;
     int prev_max = 0;
+
+    if (opts.n_threads > 1) {
+        std_chunk_size = n_vals/opts.n_threads;
+        chunk_n_vals = n_vals/opts.n_threads;
+    }
 
     //"op" is the operator you have to use, but you can use "add" to test
     int (*scan_operator)(int, int, int);
@@ -80,7 +79,6 @@ int main(int argc, char **argv)
         printf("\nIn multi-thread mode...");
 
         // Create and launch treads with compute_prefix_sum() as thread worker function
-//        start_threads(threads, opts.n_threads, ps_args, <your function>);
         start_threads(threads, opts.n_threads, ps_args, compute_prefix_sum);
 
         printf("\nThreads started...");
