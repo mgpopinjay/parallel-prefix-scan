@@ -16,6 +16,8 @@ def _parse_args():
     # General system running and configuration options
 
     parser.add_argument('--threads', type=int, default=2, help='specify number of thread workers')
+    parser.add_argument('--loops', type=int, default=10, help='specify number of loops')
+    parser.add_argument('--test', type=str, default='seq_64_test.txt', help='path to test data')
 
     args = parser.parse_args()
     return args
@@ -35,9 +37,8 @@ print(args)
 ### 8 thread: 193536
 
 THREADS = [args.threads]
-# LOOPS = [1, 10]
-LOOPS = [1]
-INPUTS = ["seq_64_test.txt"]
+LOOPS = [args.loops]
+INPUTS = [args.test]
 
 csvs = []
 for inp in INPUTS:
