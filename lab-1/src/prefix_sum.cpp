@@ -1,7 +1,7 @@
 #include "prefix_sum.h"
 #include "helpers.h"
 #include <pthread.h>
-
+//#include "../../pthread_barrier.h"
 
 // ------------------------------------------------------------------------------
 // START OF REFERENCE BARRIER
@@ -59,7 +59,7 @@ void* compute_prefix_sum(void *a)
 
     input_vals = args->input_vals;
     output_vals = args->output_vals;
-//    spin = args->spin;
+    spin = args->spin;
     n_vals = args->n_vals;
     n_threads = args->n_threads;
     t_id = args->t_id;
@@ -69,7 +69,7 @@ void* compute_prefix_sum(void *a)
     prev_max = args->prev_max;             // Pointer asterisk for args necessary?
     chunk_n_vals = args->chunk_n_vals;
 
-
+    printf("\n %d", spin);
 
     // PHASE 1
     // Get partial sum across chunks using sequential prefix sum
