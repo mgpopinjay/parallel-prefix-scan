@@ -3,10 +3,26 @@ import os
 from subprocess import check_output
 import re
 from time import sleep
+import argparse
 
-#
-#  Feel free (a.k.a. you have to) to modify this to instrument your code
-#
+
+def _parse_args():
+    """
+    Command-line arguments to the system.
+    :return: the parsed args bundle
+    """
+    parser = argparse.ArgumentParser(description='run_tests.py')
+
+    # General system running and configuration options
+
+    parser.add_argument('--threads', type=int, default=2, help='specify number of thread workers')
+
+    args = parser.parse_args()
+    return args
+
+args = _parse_args()
+print(args)
+
 
 ### 0 thread: 2016
 ### 1 thread: 63     // fix by early exit after phase 1
@@ -18,7 +34,7 @@ from time import sleep
 ### 7 thread: 96768
 ### 8 thread: 193536
 
-THREADS = [4]
+THREADS = [args.threads]
 # LOOPS = [1, 10]
 LOOPS = [1]
 INPUTS = ["seq_64_test.txt"]
@@ -52,3 +68,5 @@ print("\n")
 print(", ".join(header))
 for csv in csvs:
     print (", ".join(csv))
+
+
