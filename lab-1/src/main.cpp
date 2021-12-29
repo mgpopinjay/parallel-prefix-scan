@@ -41,8 +41,14 @@ int main(int argc, char **argv)
     printf("Read n_vals: %d \n", n_vals);
 
     // Initialize chunk size as total number of values for sequential case
-    int std_chunk_size = n_vals/opts.n_threads;
-    int chunk_n_vals = n_vals/opts.n_threads;
+    if (opt.n_threads == 0 || opts.n_threads = 1) {
+        int std_chunk_size = n_vals;
+        int chunk_n_vals = n_vals;
+    }
+    else {
+        int std_chunk_size = n_vals/opts.n_threads;
+        int chunk_n_vals = n_vals/opts.n_threads;
+    }
     int prev_max = 0;
 
     //"op" is the operator you have to use, but you can use "add" to test
