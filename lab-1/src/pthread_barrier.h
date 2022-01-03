@@ -32,9 +32,9 @@
 
 #ifdef __APPLE__
 
-//#ifdef __cplusplus
-//extern "C" {
-//#endif
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #if !defined(PTHREAD_BARRIER_SERIAL_THREAD)
 # define PTHREAD_BARRIER_SERIAL_THREAD	(1)
@@ -75,9 +75,9 @@ int pthread_barrier_destroy(pthread_barrier_t *barrier);
 
 int pthread_barrier_wait(pthread_barrier_t *barrier);
 
-//#ifdef  __cplusplus
-//}
-//#endif
+#ifdef  __cplusplus
+}
+#endif
 
 #endif /* __APPLE__ */
 

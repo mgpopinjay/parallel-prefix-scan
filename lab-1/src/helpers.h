@@ -17,6 +17,7 @@ struct prefix_sum_args_t {
   int                std_chunk_size;
   int                *prev_max;
   int                chunk_n_vals;
+//  int                *barrier;
 };
 
 // Direct allocated data memory to data struct pointer
