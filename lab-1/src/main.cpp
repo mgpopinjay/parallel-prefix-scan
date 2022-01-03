@@ -8,8 +8,18 @@
 #include "operators.h"
 #include "helpers.h"
 #include "prefix_sum.h"
+#include <pthread.h>
+#include "pthread_barrier.h"
 
 using namespace std;
+
+//// These three global variables are used in the implementation of a simple counter barrier
+//pthread_cond_t end_of_phase;   // condition variable - waiting for all threads to reach barrier
+//pthread_mutex_t phase_barrier; // mutex lock - to ensure atomicity of barrier function
+//int number_complete_phase;     // count variable - the number of threads currently at the barrier
+
+// Initialize standard pthread barrier
+pthread_barrier_t basic_barrier;
 
 int main(int argc, char **argv)
 {
@@ -26,6 +36,15 @@ int main(int argc, char **argv)
     printf("\nIn main()");
     printf("\nNum of threads: %d \n", opts.n_threads);
 
+    pthread_barrier_init(&basic_barrier, NULL, opts.n_threads + 1);
+
+
+//    // Initialize the barrier mutex and condition variable
+//    pthread_mutex_init(&phase_barrier, NULL);
+//    pthread_cond_init(&end_of_phase, NULL);
+//    number_complete_phase = 0;
+
+
     // Setup threads: allocates memory for worker threads
     pthread_t *threads = sequential ? NULL : alloc_threads(opts.n_threads);;
 
@@ -40,7 +59,6 @@ int main(int argc, char **argv)
     printf("Read n_vals: %d \n", n_vals);
 
     // Initialize chunk size as total number of values for sequential case
-
     int std_chunk_size = n_vals;
     int chunk_n_vals = n_vals;
     int prev_max = 0;
@@ -87,6 +105,8 @@ int main(int argc, char **argv)
         join_threads(threads, opts.n_threads);
 
         printf("\nThreads joined...");
+
+        pthread_barrier_destroy(&basic_barrier);
 
     }
 

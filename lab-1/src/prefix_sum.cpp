@@ -3,37 +3,44 @@
 #include <pthread.h>
 //#include "../../pthread_barrier.h"
 
+
 // ------------------------------------------------------------------------------
 // START OF REFERENCE BARRIER
 // ------------------------------------------------------------------------------
 
-
 // These three global variables are used in the implementation of a simple counter barrier
-pthread_cond_t end_of_phase;   // condition variable - waiting for all threads to reach barrier
-pthread_mutex_t phase_barrier; // mutex lock - to ensure atomicity of barrier function
-int number_complete_phase;     // count variable - the number of threads currently at the barrier
+//pthread_cond_t end_of_phase;   // condition variable - waiting for all threads to reach barrier
+//pthread_mutex_t phase_barrier; // mutex lock - to ensure atomicity of barrier function
+//int number_complete_phase;     // count variable - the number of threads currently at the barrier
+
+//// Initialize the barrier mutex and condition variable
+//pthread_mutex_init(&phase_barrier, NULL);
+//pthread_cond_init(&end_of_phase, NULL);
+//number_complete_phase = 0;
 
 
-void barrier(int n_threads){
-    // Acquire the lock and increment the global number_complete variable
-    pthread_mutex_lock(&phase_barrier);
-    number_complete_phase++;
-    // If I am the last thread then reset the global variable and release the other waiting threads
-    if (number_complete_phase == n_threads) {
-        number_complete_phase = 0;
-        pthread_cond_broadcast(&end_of_phase);
-    }
-        // Otherwise wait until the final thread gets here
-        // Automatically release the lock
-    else {
-        pthread_cond_wait(&end_of_phase, &phase_barrier);
-    }
-    // Explicitly release the lock
-    pthread_mutex_unlock(&phase_barrier);
-}
+//void barrier(int n_threads){
+//    // Acquire the lock and increment the global number_complete variable
+//    pthread_mutex_lock(&phase_barrier);
+//    number_complete_phase++;
+//    // If I am the last thread then reset the global variable and release the other waiting threads
+//    if (number_complete_phase == n_threads) {
+//        number_complete_phase = 0;
+//        pthread_cond_broadcast(&end_of_phase);
+//    }
+//        // Otherwise wait until the final thread gets here
+//        // Automatically release the lock
+//    else {
+//        pthread_cond_wait(&end_of_phase, &phase_barrier);
+//    }
+//    // Explicitly release the lock
+//    pthread_mutex_unlock(&phase_barrier);
+//}
 // ------------------------------------------------------------------------------
 // END OF REFERENCE BARRIER
 // ------------------------------------------------------------------------------
+
+
 
 
 void* compute_prefix_sum(void *a)
@@ -87,8 +94,9 @@ void* compute_prefix_sum(void *a)
     printf("\n");
     printf("\nThread %d sum at [%d] = %d", t_id, chunk_n_vals-1, output_vals[chunk_n_vals-1]);
 
-
-    barrier(n_threads);
+    // FIRST BARRIER
+    pthread_barrier_wait(&basic_barrier);
+//    barrier(n_threads);
 
     printf("\n");
     printf("\nPhase 1 threads joined");
@@ -149,8 +157,9 @@ void* compute_prefix_sum(void *a)
     }
     printf("\nEnd of Phase 2 BEFORE joining threads ");
 
-
-    barrier(n_threads);
+    // SECOND BARRIER
+    pthread_barrier_wait(&basic_barrier);
+//    barrier(n_threads);
 
     printf("\n");
     printf("\nEnd of Phase 2 AFTER joining threads");
