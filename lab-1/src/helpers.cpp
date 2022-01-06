@@ -1,4 +1,5 @@
 #include "helpers.h"
+#include <pthread.h>
 
 prefix_sum_args_t* alloc_args(int n_threads) {
   return (prefix_sum_args_t*) malloc(n_threads * sizeof(prefix_sum_args_t));
@@ -14,6 +15,7 @@ int next_power_of_two(int x) {
 
 // Create an args worker packet for each thread
 void fill_args(prefix_sum_args_t *args,
+               pthread_barrier_t *basic_barrier,
                int n_threads,
                int n_vals,
                int *inputs,
@@ -40,6 +42,8 @@ void fill_args(prefix_sum_args_t *args,
         args[i].op = op;
         args[i].n_loops = n_loops;
         args[i].std_chunk_size = std_chunk_size;
+        args[i].barrier = basic_barrier;
+
 //        args[i].prev_max = &prev_max;
 
         // Re-assign reduced num of vals to each chunk

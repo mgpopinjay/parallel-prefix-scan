@@ -1,25 +1,24 @@
 #include "prefix_sum.h"
 #include "helpers.h"
 #include <pthread.h>
-//#include "../../pthread_barrier.h"
 
 
 // ------------------------------------------------------------------------------
 // START OF REFERENCE BARRIER
 // ------------------------------------------------------------------------------
 
-// These three global variables are used in the implementation of a simple counter barrier
-//pthread_cond_t end_of_phase;   // condition variable - waiting for all threads to reach barrier
-//pthread_mutex_t phase_barrier; // mutex lock - to ensure atomicity of barrier function
-//int number_complete_phase;     // count variable - the number of threads currently at the barrier
+// // These three global variables are used in the implementation of a simple counter barrier
+// pthread_cond_t end_of_phase;   // condition variable - waiting for all threads to reach barrier
+// pthread_mutex_t phase_barrier; // mutex lock - to ensure atomicity of barrier function
+// int number_complete_phase;     // count variable - the number of threads currently at the barrier
 
-//// Initialize the barrier mutex and condition variable
-//pthread_mutex_init(&phase_barrier, NULL);
-//pthread_cond_init(&end_of_phase, NULL);
-//number_complete_phase = 0;
+// // Initialize the barrier mutex and condition variable
+// // pthread_mutex_init(&phase_barrier, NULL);
+// // pthread_cond_init(&end_of_phase, NULL);
+// // number_complete_phase = 0;
 
 
-//void barrier(int n_threads){
+// void barrier(int n_threads){
 //    // Acquire the lock and increment the global number_complete variable
 //    pthread_mutex_lock(&phase_barrier);
 //    number_complete_phase++;
@@ -35,10 +34,11 @@
 //    }
 //    // Explicitly release the lock
 //    pthread_mutex_unlock(&phase_barrier);
-//}
+// }
 // ------------------------------------------------------------------------------
 // END OF REFERENCE BARRIER
 // ------------------------------------------------------------------------------
+
 
 
 
@@ -60,6 +60,7 @@ void* compute_prefix_sum(void *a)
     int                std_chunk_size;
     int                *prev_max;
     int                chunk_n_vals;
+    pthread_barrier_t  *basic_barrier;
 
     // For worker packet, use prefix_sum_args_t struct declared in helpers.h
     prefix_sum_args_t *args = (prefix_sum_args_t *) a;
@@ -75,6 +76,7 @@ void* compute_prefix_sum(void *a)
     std_chunk_size = args->std_chunk_size;
     prev_max = args->prev_max;             // Pointer asterisk for args necessary?
     chunk_n_vals = args->chunk_n_vals;
+    basic_barrier = args->barrier;
 
 //    printf("\n %d", spin);
 
@@ -95,8 +97,8 @@ void* compute_prefix_sum(void *a)
     printf("\nThread %d sum at [%d] = %d", t_id, chunk_n_vals-1, output_vals[chunk_n_vals-1]);
 
     // FIRST BARRIER
-    pthread_barrier_wait(&basic_barrier);
-//    barrier(n_threads);
+    pthread_barrier_wait(basic_barrier);
+    // barrier(n_threads);
 
     printf("\n");
     printf("\nPhase 1 threads joined");
@@ -158,8 +160,8 @@ void* compute_prefix_sum(void *a)
     printf("\nEnd of Phase 2 BEFORE joining threads ");
 
     // SECOND BARRIER
-    pthread_barrier_wait(&basic_barrier);
-//    barrier(n_threads);
+    pthread_barrier_wait(basic_barrier);
+    // barrier(n_threads);
 
     printf("\n");
     printf("\nEnd of Phase 2 AFTER joining threads");

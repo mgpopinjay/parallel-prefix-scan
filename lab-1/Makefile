@@ -1,6 +1,7 @@
 CC = g++ 
 SRCS = ./src/*.cpp
 INC = ./src/
+# OPTS = -std=c++17 -Wall -Werror -pthread -O3
 OPTS = -std=c++17 -Wall -Werror -lpthread -O3
 
 EXEC = bin/prefix_scan

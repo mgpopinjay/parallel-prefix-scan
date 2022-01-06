@@ -17,7 +17,8 @@ struct prefix_sum_args_t {
   int                std_chunk_size;
   int                *prev_max;
   int                chunk_n_vals;
-//  int                *barrier;
+  // void              *barrier;
+  pthread_barrier_t  *barrier;
 };
 
 // Direct allocated data memory to data struct pointer
@@ -26,6 +27,7 @@ prefix_sum_args_t* alloc_args(int n_threads);
 int next_power_of_two(int x);
 
 void fill_args(prefix_sum_args_t *args,
+               pthread_barrier_t *basic_barrier,
                int n_threads,
                int n_vals,
                int *inputs,

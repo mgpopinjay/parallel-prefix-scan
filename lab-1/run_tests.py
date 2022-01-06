@@ -25,15 +25,31 @@ args = _parse_args()
 print(args)
 
 
-### 0 thread: 2016
-### 1 thread: 63     // fix by early exit after phase 1
-### 2 thread: 2016   // fix by indexing by chunk_n_vals in each thread
-### 3 thread: 6048
-### 4 thread: 12096
-### 5 thread: 24192
-### 6 thread: 48384
-### 7 thread: 96768
-### 8 thread: 193536
+####### 16k 10 loops on Ubuntu via UTM virtual machine on M1 (8-core CPU) #######
+### 0 thread: 3784 4407
+### 1 thread: 557  806
+### 2 thread: 1041 2003
+### 3 thread: 488  995
+### 4 thread: 747  1042
+### 5 thread: 1148 1261
+### 6 thread:      
+### 7 thread:
+### 8 thread: 
+
+####### 16k 100000 loops on Ubuntu via UTM virtual machine on M1 (8-core CPU) #######
+### 0 thread: 2575890
+### 1 thread: 2833714
+### 2 thread: 1425316
+### 3 thread: 978114
+### 4 thread: 794636
+### 5 thread: 675349
+### 6 thread: 598844
+### 7 thread: 544203
+### 8 thread: 506094
+### 9 thread: 588036
+### 10 thread: 547236
+
+
 
 THREADS = [args.threads]
 LOOPS = [args.loops]
@@ -47,6 +63,7 @@ for inp in INPUTS:
             # print("\nOn thread:", thr)
             cmd = "./bin/prefix_scan -o temp.txt -n {} -i tests/{} -l {}".format(
                 thr, inp, loop)
+            
             print("\ncmd:", cmd)
 
             out = check_output(cmd, shell=True).decode("ascii")

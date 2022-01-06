@@ -9,7 +9,7 @@
 #include "helpers.h"
 #include "prefix_sum.h"
 #include <pthread.h>
-#include "pthread_barrier.h"
+
 
 using namespace std;
 
@@ -18,11 +18,18 @@ using namespace std;
 //pthread_mutex_t phase_barrier; // mutex lock - to ensure atomicity of barrier function
 //int number_complete_phase;     // count variable - the number of threads currently at the barrier
 
+
+
 // Initialize standard pthread barrier
 pthread_barrier_t basic_barrier;
 
+
+
 int main(int argc, char **argv)
 {
+ 
+    printf("\nInside main()");
+
     // Parse args
     struct options_t opts;
     get_opts(argc, argv, &opts);
@@ -36,7 +43,11 @@ int main(int argc, char **argv)
     printf("\nIn main()");
     printf("\nNum of threads: %d \n", opts.n_threads);
 
-    pthread_barrier_init(&basic_barrier, NULL, opts.n_threads + 1);
+
+    // pthread_barrier_t basic_barrier;
+
+
+    pthread_barrier_init(&basic_barrier, NULL, opts.n_threads);
 
 
 //    // Initialize the barrier mutex and condition variable
@@ -74,7 +85,7 @@ int main(int argc, char **argv)
 //    scan_operator = add;
 
     // Create an args worker packet for each thread
-    fill_args(ps_args, opts.n_threads, n_vals, input_vals, output_vals,
+    fill_args(ps_args, &basic_barrier, opts.n_threads, n_vals, input_vals, output_vals,
         opts.spin, scan_operator, opts.n_loops, std_chunk_size, prev_max, chunk_n_vals);
 
     // Start timer
