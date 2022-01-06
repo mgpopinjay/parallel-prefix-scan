@@ -30,8 +30,9 @@ print(args)
 ####### 16k multi-loops on Ubuntu via UTM virtual machine on M1 (8-core CPU) #######
 
 # Setup thread & loop numbers as iterables
-LOOPS = [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150]
-THREADS = [1, 2, 4, 6]
+LOOPS = [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150,
+         160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300]
+THREADS = [1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32]
 INPUTS = [args.test]
 
 # THREADS = [args.threads]

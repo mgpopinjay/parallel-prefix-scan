@@ -88,8 +88,12 @@ void* compute_prefix_sum(void *a)
     for (int i = 1; i < chunk_n_vals; ++i) {
         //y_i = y_{i-1}  <op>  x_i
         output_vals[i] = op(output_vals[i-1], input_vals[i], n_loops);
+    }
 
-//        printf("\nPhase 1: n_vals %d = %d", i, output_vals[i]);
+
+   // Exit if only a single thread
+    if (n_threads == 1) {
+        return 0;
     }
 
     // Check thread outputs before joining
@@ -107,10 +111,7 @@ void* compute_prefix_sum(void *a)
     printf("\n");
     printf("\nMid-way check: output[n_vals-1] = %d", output_vals[chunk_n_vals-1]);
 
-    // Exit if only a single thread
-    if (n_threads == 1) {
-        return 0;
-    }
+ 
 
     // PHASE 2
     // Using just thread worker 0, compute pre-fix sum with partial sum from each chunk
