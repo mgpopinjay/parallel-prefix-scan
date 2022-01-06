@@ -9,6 +9,7 @@
 #include "helpers.h"
 #include "prefix_sum.h"
 #include <pthread.h>
+#include <math.h>
 
 
 using namespace std;
@@ -75,8 +76,8 @@ int main(int argc, char **argv)
     int prev_max = 0;
 
     if (opts.n_threads > 1) {
-        std_chunk_size = n_vals/opts.n_threads;
-        chunk_n_vals = n_vals/opts.n_threads;
+        std_chunk_size = (int) floor(n_vals/opts.n_threads);
+        chunk_n_vals = (int) floor(n_vals/opts.n_threads);
     }
 
     //"op" is the operator you have to use, but you can use "add" to test
