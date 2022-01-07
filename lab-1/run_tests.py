@@ -17,7 +17,7 @@ def _parse_args():
 
     # General system running and configuration options
     # parser.add_argument('--threads', type=int, default=0, help='specify number of thread workers')
-    # parser.add_argument('--loops', type=int, default=10, help='specify number of loops')
+    parser.add_argument('--loops', type=int, default=10, help='specify number of loops')
     parser.add_argument('--test', type=str, default='seq_64_test.txt', help='path to test data')
     parser.add_argument('--verbose', type=bool, default=False, help="turn on to print in-process log")
     args = parser.parse_args()
@@ -30,13 +30,13 @@ print(args)
 ####### 16k multi-loops on Ubuntu via UTM virtual machine on M1 (8-core CPU) #######
 
 # Setup thread & loop numbers as iterables
-LOOPS = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150,
-         160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300]
+# LOOPS = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150,
+#          160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300]
 THREADS = [1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32]
 INPUTS = [args.test]
 
 # THREADS = [args.threads]
-# LOOPS = [args.loops]
+LOOPS = [args.loops]
 
 # Initialize df for runtime across loop sizes
 time_table = np.zeros((len(THREADS), len(LOOPS)))
