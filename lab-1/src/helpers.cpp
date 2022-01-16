@@ -13,9 +13,18 @@ int next_power_of_two(int x) {
     return pow;
 }
 
+
+Barrier* alloc_barrier(bool spin, int n_threads) {
+    // return ( static_cast<Barrier*>(new PthreadBarrier(n_threads)));
+    return (spin ? static_cast<Barrier*>(new SemaphoreBarrier(n_threads)) : 
+            static_cast<Barrier*>(new PthreadBarrier(n_threads)));
+}
+
+
 // Create an args worker packet for each thread
 void fill_args(prefix_sum_args_t *args,
-               pthread_barrier_t *basic_barrier,
+               Barrier *basic_barrier,
+               // pthread_barrier_t *basic_barrier,
                int n_threads,
                int n_vals,
                int *inputs,
@@ -42,7 +51,8 @@ void fill_args(prefix_sum_args_t *args,
         args[i].op = op;
         args[i].n_loops = n_loops;
         args[i].std_chunk_size = std_chunk_size;
-        args[i].barrier = basic_barrier;
+        args[i].basic_barrier = basic_barrier;
+        // args[i].barrier = basic_barrier;
 
 //        args[i].prev_max = &prev_max;
 

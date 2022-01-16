@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <spin_barrier.h>
+#include <barrier.h>
+
 
 struct prefix_sum_args_t {
   int*               input_vals;
@@ -17,8 +19,8 @@ struct prefix_sum_args_t {
   int                std_chunk_size;
   int                *prev_max;
   int                chunk_n_vals;
-  // void              *barrier;
-  pthread_barrier_t  *barrier;
+  Barrier            *basic_barrier;
+  // pthread_barrier_t  *barrier;
 };
 
 // Direct allocated data memory to data struct pointer
@@ -27,7 +29,8 @@ prefix_sum_args_t* alloc_args(int n_threads);
 int next_power_of_two(int x);
 
 void fill_args(prefix_sum_args_t *args,
-               pthread_barrier_t *basic_barrier,
+               Barrier *basic_barrier,
+               // pthread_barrier_t *basic_barrier,
                int n_threads,
                int n_vals,
                int *inputs,
@@ -39,3 +42,7 @@ void fill_args(prefix_sum_args_t *args,
                int prev_max,
                int chunk_n_vals)
                ;
+
+
+Barrier* alloc_barrier(bool spin, int n_threads);
+

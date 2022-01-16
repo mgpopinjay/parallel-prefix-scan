@@ -60,7 +60,8 @@ void* compute_prefix_sum(void *a)
     int                std_chunk_size;
     int                *prev_max;
     int                chunk_n_vals;
-    pthread_barrier_t  *basic_barrier;
+    // Barrier            *basic_barrier;
+    // pthread_barrier_t  *basic_barrier;
 
     // For worker packet, use prefix_sum_args_t struct declared in helpers.h
     prefix_sum_args_t *args = (prefix_sum_args_t *) a;
@@ -76,7 +77,8 @@ void* compute_prefix_sum(void *a)
     std_chunk_size = args->std_chunk_size;
     prev_max = args->prev_max;             // Pointer asterisk for args necessary?
     chunk_n_vals = args->chunk_n_vals;
-    basic_barrier = args->barrier;
+    // basic_barrier = args->basic_barrier;
+    // basic_barrier = args->barrier;
 
 //    printf("\n %d", spin);
 
@@ -101,7 +103,9 @@ void* compute_prefix_sum(void *a)
     printf("\nThread %d sum at [%d] = %d", t_id, chunk_n_vals-1, output_vals[chunk_n_vals-1]);
 
     // FIRST BARRIER
-    pthread_barrier_wait(basic_barrier);
+    args->basic_barrier->wait();
+    // pthread_barrier_wait(basic_barrier);
+
     // barrier(n_threads);
 
     printf("\n");
@@ -161,7 +165,8 @@ void* compute_prefix_sum(void *a)
     printf("\nEnd of Phase 2 BEFORE joining threads ");
 
     // SECOND BARRIER
-    pthread_barrier_wait(basic_barrier);
+    args->basic_barrier->wait();
+    // pthread_barrier_wait(basic_barrier);
     // barrier(n_threads);
 
     printf("\n");
