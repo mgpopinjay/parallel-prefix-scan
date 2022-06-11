@@ -47,6 +47,7 @@ time_table = np.zeros((len(THREADS), len(LOOPS)))
 for inp in INPUTS:
     for i_thread, thread in enumerate(THREADS):
         for i_loop, loop in enumerate(LOOPS):
+            print("\Computing file:", inp)
             cmd = "./bin/prefix_scan -o temp.txt -n {} -i tests/{} -l {}".format(
                 thread, inp, loop)
             print("\ncmd:", cmd)

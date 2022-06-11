@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <argparse.h>
-#include <threads.h>
+// #include <threads.h>
 #include <io.h>
 #include <chrono>
 #include <cstring>
@@ -10,6 +10,7 @@
 #include "prefix_sum.h"
 #include <pthread.h>
 #include <math.h>
+#include "threads.h"
 
 
 using namespace std;

@@ -37,7 +37,11 @@ void fill_args(prefix_sum_args_t *args,
                int chunk_n_vals
                ) {
 
-    int leftovers = n_vals % ( (n_threads - 1) * std_chunk_size);
+    int leftovers = 0;
+
+    if (leftovers > 1){
+        leftovers = n_vals % ( (n_threads - 1) * std_chunk_size);
+    }             
 
     for (int i = 0; i < n_threads; ++i) {
         printf("\n");
