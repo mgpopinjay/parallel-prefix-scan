@@ -18,7 +18,7 @@ def _parse_args():
     # General system running and configuration options
     # parser.add_argument('--threads', type=int, default=0, help='specify number of thread workers')
     # parser.add_argument('--loops', type=int, default=10, help='specify number of loops')
-    parser.add_argument('--test', type=str, default='seq_64_test.txt', help='path to test data')
+    parser.add_argument('--test', type=str, default='16k.txt', help='path to test data')
     parser.add_argument('--spin', type=bool, default=False, help="flag for custom barrier activation")
     parser.add_argument('--verbose', type=bool, default=False, help="turn on to print in-process log")
     args = parser.parse_args()
@@ -28,84 +28,110 @@ args = _parse_args()
 print(args)
 
 
-####### 16k multi-loops on Ubuntu via UTM virtual machine on M1 (8-core CPU) #######
-
-# Setup thread & loop numbers as iterables
-LOOPS = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150,
-         160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300]
-# THREADS = [1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32]
-THREADS = [1, 2, 4, 6, 8]
-INPUTS = [args.test]
-
-# THREADS = [args.threads]
-# LOOPS = [args.loops]
-
-# Initialize df for runtime across loop sizes
-time_table = np.zeros((len(THREADS), len(LOOPS)))
 
 
-for inp in INPUTS:
+def main():
+
+    comp_loops()
+
+
+
+def comp_loops():
+    """
+    Plot 10 vs 100k loops
+    """
+
+    # THREADS = [args.threads]
+    # LOOPS = [args.loops]
+
+    # Setup thread & loop numbers as iterables
+    LOOPS = [10, 100, 200, 300, 400, 500]
+    # LOOPS = [10, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+    # LOOPS = [10, 100000]
+    THREADS = [1, 2, 4, 8, 16]
+    # THREADS = [0, 1, 2, 4, 6, 8]
+    INPUTS = [args.test]
+
+
+    # Initialize df for runtime across loop sizes
+    time_table = np.zeros((len(THREADS), len(LOOPS)))
+
+
+    for inp in INPUTS:
+        for i_thread, thread in enumerate(THREADS):
+            for i_loop, loop in enumerate(LOOPS):
+                print("\Computing file:", inp)
+                cmd = "./bin/prefix_scan -o temp.txt -n {} -i tests/{} -l {}".format(
+                    thread, inp, loop)
+                print("\ncmd:", cmd)
+                out = check_output(cmd, shell=True).decode("ascii")
+                if args.verbose:
+                    print("\nout:", out)
+                m = re.search("time: (.*)", out)
+                if m is not None:
+                    time = m.group(1)
+                    time_table[i_thread, i_loop] = time
+                    print("\nRuntime for", loop,"-loop on", thread, "-thread is", time)
+            sleep(0.5)         
+
+    print(time_table)
+
+
+    # Plot
     for i_thread, thread in enumerate(THREADS):
+        plt.plot(LOOPS, time_table[i_thread], label=thread)
+
+    plt.title("Runtime across Loops & Threads")
+    plt.ylabel("Runtime")
+    plt.xlabel('Loops')
+    plt.legend()
+    plt.show()
+
+
+
+def comp_threads():
+    """
+    Plots 100k loops over 2, 4, 6 ... to 16 threads
+    """
+    LOOPS = [100000]
+    THREADS = [1, 2, 4, 6, 8, 10, 12, 14, 16]
+    INPUTS = [args.test]
+
+    # Initialize df for runtime across thread numbers
+    time_table = np.zeros((len(LOOPS), len(THREADS)))
+
+
+    for inp in INPUTS:
         for i_loop, loop in enumerate(LOOPS):
-            print("\Computing file:", inp)
-            cmd = "./bin/prefix_scan -o temp.txt -n {} -i tests/{} -l {}".format(
-                thread, inp, loop)
-            print("\ncmd:", cmd)
-            out = check_output(cmd, shell=True).decode("ascii")
-            if args.verbose:
-                print("\nout:", out)
-            m = re.search("time: (.*)", out)
-            if m is not None:
-                time = m.group(1)
-                time_table[i_thread, i_loop] = time
-                print("\nRuntime for", loop,"-loop on", thread, "-thread is", time)
+            for i_thread, thread in enumerate(THREADS):
+                print("\Computing file:", inp)
+                cmd = "./bin/prefix_scan -o temp.txt -n {} -i tests/{} -l {}".format(
+                    thread, inp, loop)
+                print("\ncmd:", cmd)
+                out = check_output(cmd, shell=True).decode("ascii")
+                if args.verbose:
+                    print("\nout:", out)
+                m = re.search("time: (.*)", out)
+                if m is not None:
+                    time = m.group(1)
+                    time_table[i_loop, i_thread] = time
+                    print("\nRuntime for", loop,"-loop on", thread, "-thread is", time)
 
-        sleep(0.5)            
+            sleep(0.5)            
 
-print(time_table)
+    print(time_table)
 
-# Accuracy summary plot
-for i_thread, thread in enumerate(THREADS):
-    plt.plot(LOOPS, time_table[i_thread], label=thread)
-
-
-plt.title("Runtime variation across Loops & Threads")
-plt.ylabel("Runtime")
-plt.xlabel('Loops')
-plt.legend()
-plt.show()
+    # Plot
+    for i_loop, loop in enumerate(LOOPS):
+        plt.plot(THREADS, time_table[i_loop], label=loop)
 
 
-# csvs = []
-# for inp in INPUTS:
-#     for loop in LOOPS:
-#         csv = ["{}/{}".format(inp, loop)]
-#         for thr in THREADS:
-#             # print("\nOn thread:", thr)
-#             cmd = "./bin/prefix_scan -o temp.txt -n {} -i tests/{} -l {}".format(
-#                 thr, inp, loop)
-            
-#             print("\ncmd:", cmd)
-
-#             out = check_output(cmd, shell=True).decode("ascii")
-
-#             if args.verbose:
-#                 print("\nout:", out)
-
-#             m = re.search("time: (.*)", out)
-#             if m is not None:
-#                 time = m.group(1)
-#                 csv.append(time)
-#                 print("\nRuntime for", loop,"-loop is", time)
-
-#         csvs.append(csv)
-#         sleep(0.5)
-
-# header = ["microseconds"] + [str(x) for x in THREADS]
-
-# print("\n")
-# print(", ".join(header))
-# for csv in csvs:
-#     print (", ".join(csv))
+    plt.title("Runtimes across Threads Numbers")
+    plt.ylabel("Runtime")
+    plt.xlabel('Threads')
+    plt.legend()
+    plt.show()
 
 
+if __name__ == "__main__":
+    main()
