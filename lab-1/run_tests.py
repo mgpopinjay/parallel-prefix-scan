@@ -56,13 +56,14 @@ def comp_loops():
     # Initialize df for runtime across loop sizes
     time_table = np.zeros((len(THREADS), len(LOOPS)))
 
+    args.spin = True
 
     for inp in INPUTS:
         for i_thread, thread in enumerate(THREADS):
             for i_loop, loop in enumerate(LOOPS):
                 print("\Computing file:", inp)
-                cmd = "./bin/prefix_scan -o temp.txt -n {} -i tests/{} -l {}".format(
-                    thread, inp, loop)
+                cmd = "./bin/prefix_scan -o temp.txt -n {} -i tests/{} -l {} -s {}".format(
+                    thread, inp, loop, args.spin)
                 print("\ncmd:", cmd)
                 out = check_output(cmd, shell=True).decode("ascii")
                 if args.verbose:
@@ -105,8 +106,8 @@ def comp_threads():
         for i_loop, loop in enumerate(LOOPS):
             for i_thread, thread in enumerate(THREADS):
                 print("\Computing file:", inp)
-                cmd = "./bin/prefix_scan -o temp.txt -n {} -i tests/{} -l {}".format(
-                    thread, inp, loop)
+                cmd = "./bin/prefix_scan -o temp.txt -n {} -i tests/{} -l {} -s {}".format(
+                    thread, inp, loop, args.spin)
                 print("\ncmd:", cmd)
                 out = check_output(cmd, shell=True).decode("ascii")
                 if args.verbose:
