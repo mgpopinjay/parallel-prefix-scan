@@ -26,7 +26,7 @@ void get_opts(int argc,
     };
 
     int ind, c;
-    while ((c = getopt_long(argc, argv, "i:o:n:p:l:", l_opts, &ind)) != -1)
+    while ((c = getopt_long(argc, argv, "i:o:n:l:s", l_opts, &ind)) != -1)
     {
         switch (c)
         {
@@ -41,11 +41,11 @@ void get_opts(int argc,
         case 'n':
             opts->n_threads = atoi((char *)optarg);
             break;
-        case 's':
-            opts->spin = true;
-            break;
         case 'l':
             opts->n_loops = atoi((char *)optarg);
+            break;
+        case 's':
+            opts->spin = true;
             break;
         case ':':
             std::cerr << argv[0] << ": option -" << (char)optopt << "requires an argument." << std::endl;

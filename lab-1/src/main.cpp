@@ -12,19 +12,13 @@
 #include <math.h>
 #include "threads.h"
 
-
 using namespace std;
-
-
 
 // Initialize standard pthread barrier
 // pthread_barrier_t basic_barrier;
 
-
-
 int main(int argc, char **argv)
 {
- 
     printf("\nInside main()");
 
     // Parse args
@@ -40,33 +34,23 @@ int main(int argc, char **argv)
     printf("\nIn main()");
     printf("\nNum of threads: %d \n", opts.n_threads);
 
-
-
     // Setup barriers
     // pthread_barrier_init(&basic_barrier, NULL, opts.n_threads);
 
-
     Barrier *basic_barrier = sequential ? NULL : alloc_barrier(opts.spin, opts.n_threads);
-
-
-
-
-//    // Initialize the barrier mutex and condition variable
-//    pthread_mutex_init(&phase_barrier, NULL);
-//    pthread_cond_init(&end_of_phase, NULL);
-//    number_complete_phase = 0;
 
 
     // Setup threads: allocates memory for worker threads
     pthread_t *threads = sequential ? NULL : alloc_threads(opts.n_threads);;
 
-    // Setup args & read input data: allocates memory for data
+    // Setup args & read input data: allocates memory for data struct
     prefix_sum_args_t *ps_args = alloc_args(opts.n_threads);
 
     // Setup pointer variable for input/output values
     int n_vals;
     int *input_vals, *output_vals;
 
+    // Pass empty pointers to file reader for filling
     read_file(&opts, &n_vals, &input_vals, &output_vals);
     printf("Read n_vals: %d \n", n_vals);
 

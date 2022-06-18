@@ -4,26 +4,17 @@ Barrier::Barrier(int n_threads) {
     this->n_threads = n_threads;
 }
 
-PthreadBarrier::PthreadBarrier(int n_threads) : Barrier(n_threads) {
-    pthread_barrier_init(&barrier, NULL, n_threads);
-}
 
-void PthreadBarrier::wait() {
-    pthread_barrier_wait(&barrier);
-}
-
-PthreadBarrier::~PthreadBarrier() {
-    pthread_barrier_destroy(&barrier);
-}
-
+// Counter-based semaphroe barrier
 SemaphoreBarrier::SemaphoreBarrier(int n_threads) : Barrier(n_threads) {
+    counter = 0;
     sem_init(&arrival, 0, 1);
     sem_init(&departure, 0, 0);
-    counter = 0;
 }
 
 void SemaphoreBarrier::wait() {
     sem_wait(&arrival);
+
     if (++counter < n_threads) {
         sem_post(&arrival);
     }
@@ -32,6 +23,7 @@ void SemaphoreBarrier::wait() {
     }
     
     sem_wait(&departure);
+
     if (--counter > 0) {
         sem_post(&departure);
     }
@@ -43,4 +35,19 @@ void SemaphoreBarrier::wait() {
 SemaphoreBarrier::~SemaphoreBarrier() {
     sem_destroy(&arrival);
     sem_destroy(&departure);
+}
+
+
+
+// Standard mutex-based pthread barrier
+PthreadBarrier::PthreadBarrier(int n_threads) : Barrier(n_threads) {
+    pthread_barrier_init(&barrier, NULL, n_threads);
+}
+
+void PthreadBarrier::wait() {
+    pthread_barrier_wait(&barrier);
+}
+
+PthreadBarrier::~PthreadBarrier() {
+    pthread_barrier_destroy(&barrier);
 }

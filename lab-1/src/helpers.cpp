@@ -1,6 +1,7 @@
 #include "helpers.h"
 #include <pthread.h>
 
+// Allocates memory for working data struct
 prefix_sum_args_t* alloc_args(int n_threads) {
   return (prefix_sum_args_t*) malloc(n_threads * sizeof(prefix_sum_args_t));
 }
@@ -39,7 +40,7 @@ void fill_args(prefix_sum_args_t *args,
 
     int leftovers = 0;
 
-    if (leftovers > 1){
+    if (n_threads > 1){
         leftovers = n_vals % ( (n_threads - 1) * std_chunk_size);
     }             
 

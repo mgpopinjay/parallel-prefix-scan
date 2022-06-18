@@ -2,6 +2,6 @@
 
 
 /************************
- * Your code here...    *
- * or wherever you like *
+ See semaphore barrier 
+ in barrier.cpp
  ************************/
