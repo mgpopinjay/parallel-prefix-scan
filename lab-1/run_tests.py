@@ -29,11 +29,10 @@ print(args)
 
 
 
-
 def main():
 
-    comp_loops()
-
+    # comp_loops()
+    comp_threads()
 
 
 def comp_loops():
@@ -45,18 +44,15 @@ def comp_loops():
     # LOOPS = [args.loops]
 
     # Setup thread & loop numbers as iterables
-    LOOPS = [10, 100, 200, 300, 400, 500]
-    # LOOPS = [10, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+    LOOPS = [10, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
+    # LOOPS = [10, 100, 200, 300, 400, 500]
     # LOOPS = [10, 100000]
     THREADS = [1, 2, 4, 8, 16]
-    # THREADS = [0, 1, 2, 4, 6, 8]
     INPUTS = [args.test]
-
 
     # Initialize df for runtime across loop sizes
     time_table = np.zeros((len(THREADS), len(LOOPS)))
 
-    args.spin = True
 
     for inp in INPUTS:
         for i_thread, thread in enumerate(THREADS):
@@ -82,7 +78,11 @@ def comp_loops():
     for i_thread, thread in enumerate(THREADS):
         plt.plot(LOOPS, time_table[i_thread], label=thread)
 
-    plt.title("Runtime across Loops & Threads")
+    if args.spin == True:
+        plt.title("Runtime across Loops & Threads (Semaphore)")
+    else:
+        plt.title("Runtime across Loops & Threads (Mutex)")
+
     plt.ylabel("Runtime")
     plt.xlabel('Loops')
     plt.legend()
@@ -127,7 +127,11 @@ def comp_threads():
         plt.plot(THREADS, time_table[i_loop], label=loop)
 
 
-    plt.title("Runtimes across Threads Numbers")
+    if args.spin == True:
+        plt.title("Runtimes across Threads Numbers (Semaphore)")
+    else:
+        plt.title("Runtimes across Threads Numbers (Mutex)")
+
     plt.ylabel("Runtime")
     plt.xlabel('Threads')
     plt.legend()
